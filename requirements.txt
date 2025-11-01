@@ -5,3 +5,5 @@ pandas
 pytesseract
 Pillow
 spacy
+pdf2image
+google-generativeai

@@ -2,17 +2,21 @@ import pytesseract
 from PIL import Image
 import logging
 
-def perform_ocr(image_file):
+def perform_ocr(pil_image):
     """
-    Performs OCR on an uploaded image file and returns the extracted text.
+    Performs OCR on a PIL Image object and returns the extracted text.
+    
+    The 'pil_image' argument is expected to be a PIL Image object,
+    not a file path or file-like object.
     """
     try:
-        # Open the image using PIL (Python Imaging Library)
-        img = Image.open(image_file)
+        # --- THIS IS THE FIX ---
+        # The 'pil_image' argument is ALREADY a PIL Image.
+        # We don't need to open it, just pass it directly to pytesseract.
         
         # Use pytesseract to extract text
         # lang='eng' specifies the English language
-        text = pytesseract.image_to_string(img, lang='eng')
+        text = pytesseract.image_to_string(pil_image, lang='eng')
         
         if not text.strip():
             logging.warning("OCR returned no text. Check image quality.")
