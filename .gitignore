@@ -1,0 +1,15 @@
+# Virtual Environment
+venv/
+__pycache__/
+
+# OS files
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment files
+.env
+
+notebooks

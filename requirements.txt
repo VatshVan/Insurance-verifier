@@ -1,0 +1,7 @@
+requests
+dotenv
+streamlit
+pandas
+pytesseract
+Pillow
+spacy
