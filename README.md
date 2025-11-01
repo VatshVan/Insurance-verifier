@@ -43,7 +43,7 @@ This app requires Google's Tesseract OCR engine.
 ### 2. Clone the Repository
 
 ```bash
-git clone [https://github.com/your-username/insurance-claim-verifier.git](https://github.com/your-username/insurance-claim-verifier.git)
+git clone [https://github.com/VatshVan/Insurance-verifier.git](https://github.com/VatshVan/Insurance-verifier.git)
 cd insurance-claim-verifier
 ```
 
