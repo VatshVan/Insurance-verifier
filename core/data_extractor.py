@@ -1,20 +1,15 @@
 import spacy
 import re
 
-# --- New: Define patterns for our EntityRuler ---
-# This "teaches" spaCy to find custom entities
 insurance_providers = ["Aetna", "Cigna", "UnitedHealthcare", "Anthem", "Humana", "Blue Cross Blue Shield"]
-# Create the patterns
 patterns = [{"label": "PROVIDER", "pattern": provider} for provider in insurance_providers]
 
 try:
     nlp = spacy.load("en_core_web_sm")
     
-    # --- New: Add the EntityRuler to the pipeline ---
     if "entity_ruler" not in nlp.pipe_names:
         ruler = nlp.add_pipe("entity_ruler", before="ner")
         ruler.add_patterns(patterns)
-    # --------------------------------------------------
 
 except IOError:
     print("\n--- Error: 'en_core_web_sm' model not found. ---")
@@ -22,10 +17,8 @@ except IOError:
     print("---\n")
     nlp = None
 
-# --- New: Added patterns for Age and Policy Number ---
 POLICY_PATTERN = re.compile(r"Policy\s?Number[:\s]+(\w+-\w+)", re.IGNORECASE)
 AGE_PATTERN = re.compile(r"Age[:\s]+(\d{1,2})\n", re.IGNORECASE)
-# ----------------------------------------------------
 
 def extract_data_nlp(raw_text):
     """
@@ -42,8 +35,8 @@ def extract_data_nlp(raw_text):
         "Policy Number": "Not Found",
         "Claim Amount": "Not Found",
         "Date of Service": "Not Found",
-        "Insurance Provider": "Not Found", # New
-        "Patient Age": "Not Found"         # New
+        "Insurance Provider": "Not Found",
+        "Patient Age": "Not Found"
     }
     
     persons = []
@@ -57,7 +50,7 @@ def extract_data_nlp(raw_text):
             dates.append(ent.text.strip())
         elif ent.label_ == "MONEY":
             money.append(ent.text.strip())
-        elif ent.label_ == "PROVIDER": # New
+        elif ent.label_ == "PROVIDER":
             extracted_data["Insurance Provider"] = ent.text.strip()
             
     if persons:
@@ -78,7 +71,6 @@ def extract_data_nlp(raw_text):
             except ValueError:
                 continue
                 
-    # --- New: Use RegEx for patterns the model misses ---
     policy_match = POLICY_PATTERN.search(raw_text)
     if policy_match:
         extracted_data["Policy Number"] = policy_match.group(1).strip()
@@ -86,6 +78,5 @@ def extract_data_nlp(raw_text):
     age_match = AGE_PATTERN.search(raw_text)
     if age_match:
         extracted_data["Patient Age"] = int(age_match.group(1).strip())
-    # -------------------------------------------------------
         
     return extracted_data

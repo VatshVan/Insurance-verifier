@@ -84,7 +84,6 @@ with col1:
             else:
                 st.error(st.session_state.extracted_text)
 
-# --- Column 2: Results Display (No changes here) ---
 with col2:
     st.subheader("Processing Results:")
     if not st.session_state.processing_complete:
@@ -97,7 +96,7 @@ with col2:
         else: st.error(f"An error occurred: {status}")
 
         st.markdown("---")
-        st.write("#### 🤖 AI-Powered Recommendations")
+        st.write("#### AI-Powered Recommendations")
         for reco in st.session_state.recommendations: st.markdown(f"- {reco}")
         st.markdown("---")
         

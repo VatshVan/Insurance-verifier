@@ -2,13 +2,11 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
-# Load all environment variables
 load_dotenv()
 
-# Configure the Gemini API
 try:
     genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-    model = genai.GenerativeModel('gemini-1.5-flash') # Use the fast model
+    model = genai.GenerativeModel('gemini-2.5-flash')
 except Exception as e:
     print(f"Error configuring Gemini: {e}")
     model = None
@@ -20,7 +18,6 @@ def get_gemini_recommendations(extracted_data, provider_stats):
     if model is None:
         return ["Error: Gemini AI model is not configured. Check your GEMINI_API_KEY."]
 
-    # Create a detailed prompt for the AI
     prompt = f"""
     You are an "AI Insurance Claim Assistant". Your job is to provide short, empathetic, and actionable recommendations to a user about their insurance claim.
     
@@ -47,7 +44,6 @@ def get_gemini_recommendations(extracted_data, provider_stats):
 
     try:
         response = model.generate_content(prompt)
-        # Split the text response into a list of bullet points
         recommendations = [reco.strip() for reco in response.text.split('- ') if reco.strip()]
         return recommendations
     
@@ -55,5 +51,4 @@ def get_gemini_recommendations(extracted_data, provider_stats):
         print(f"Error calling Gemini API: {e}")
         return [f"Error generating AI recommendations: {e}"]
 
-# We need to access session state for the status, so import streamlit
 import streamlit as st

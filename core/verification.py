@@ -1,10 +1,8 @@
 import json
 import os
 
-# Get the absolute path to the directory this file is in
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Construct paths to our mock data files
 POLICIES_DB_PATH = os.path.join(BASE_DIR, '..', 'mock_data', 'policies_db.json')
 PROCEDURES_DB_PATH = os.path.join(BASE_DIR, '..', 'mock_data', 'procedures_db.json')
 
@@ -25,7 +23,6 @@ def clean_amount(amount_str):
     if isinstance(amount_str, (int, float)):
         return float(amount_str)
     
-    # Remove commas and currency symbols if any
     cleaned_str = re.sub(r"[,\$€£]", "", str(amount_str))
     try:
         return float(cleaned_str)
@@ -36,7 +33,6 @@ def verify_claim(extracted_data):
     """
     Verifies the extracted claim data against business rules.
     """
-    # Load our "databases"
     valid_policies = load_json(POLICIES_DB_PATH)
     procedure_rules = load_json(PROCEDURES_DB_PATH)
     
@@ -46,7 +42,6 @@ def verify_claim(extracted_data):
     results = []
     is_approved = True
 
-    # --- Rule 1: Check for missing data ---
     if "Not Found" in extracted_data.values():
         results.append({
             "status": "Fail", 
@@ -54,7 +49,6 @@ def verify_claim(extracted_data):
         })
         return "Manual Review", results
 
-    # --- Rule 2: Validate Policy Number ---
     policy_num = extracted_data.get('Policy Number')
     if policy_num in valid_policies:
         results.append({
@@ -68,13 +62,9 @@ def verify_claim(extracted_data):
         })
         is_approved = False
         
-    # --- Rule 3: Validate Claim Amount (Simple) ---
-    # In a real app, you'd match this to a procedure code.
-    # For now, let's just set a general max limit.
     MAX_CLAIM_LIMIT = 5000.00
     claim_amount_str = extracted_data.get('Claim Amount', '0')
     
-    # Clean the string '1,500.00' to a float 1500.00
     claim_amount = clean_amount(claim_amount_str)
 
     if claim_amount is None:
@@ -101,11 +91,8 @@ def verify_claim(extracted_data):
             "message": f"Claim Amount ${claim_amount:,.2f} is within limits."
         })
 
-    # --- Final Verdict ---
     final_status = "Approved" if is_approved else "Rejected"
     
     return final_status, results
 
-# --- We need to import 're' for our clean_amount function ---
-# Add this one line to the very top of core/verification.py
 import re

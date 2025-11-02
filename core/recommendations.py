@@ -15,14 +15,12 @@ def generate_recommendations(extracted_data, provider_stats):
     Generates dynamic recommendations based on claim data and online stats.
     """
     recommendations = []
-    
-    # Get the data
+
     age = extracted_data.get("Patient Age")
     claim_amount_str = extracted_data.get("Claim Amount")
     claim_amount = clean_amount(claim_amount_str)
     provider_name = extracted_data.get("Insurance Provider", "Your provider")
     
-    # --- Logic 1: Based on Online Stats ---
     if provider_stats.get("status") == "warning":
         reco = f"**Provider Alert:** {provider_stats.get('summary', '')} We recommend you follow up on this claim in 5-7 business days to ensure it is processed correctly."
         recommendations.append(reco)
@@ -30,7 +28,6 @@ def generate_recommendations(extracted_data, provider_stats):
         reco = f"**Provider Info:** {provider_stats.get('summary', '')}"
         recommendations.append(reco)
 
-    # --- Logic 2: Based on Age and Claim Amount ---
     if age != "Not Found" and int(age) > 50 and claim_amount > 1000:
         reco = f"**Plan Review Suggestion:** This was a significant procedure for a patient over 50. It may be beneficial to review your plan's *out-of-pocket maximum* and *deductible* during the next open enrollment period to ensure it still fits your needs."
         recommendations.append(reco)
